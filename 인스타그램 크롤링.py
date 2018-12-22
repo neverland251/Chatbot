@@ -60,6 +60,17 @@ def search(keyword)
         else : pass
 
 
+for i in browser.find_elements_by_tag_name("span"):
+    try:
+        if i.find_elements_by_xpath("..")[0].find_elements_by_xpath("..")[0].find_elements_by_xpath("..")[0].find_elements_by_xpath("..")[0].tag_name == "li":
+            datalist.append(i.text.replace("\n","").replace("#"," "))
+    except : pass
+
+try:
+    browser.find_elements_by_tag_name("span")[0].find_elements_by_xpath("..")[0].find_elements_by_xpath("..")[0].find_elements_by_xpath("..")[0].find_elements_by_xpath("..")[0].tag_name
+
+except :
+    pass
 # In[467]:
 
 
@@ -81,7 +92,7 @@ try:
 
 except (InvalidSelectorException):
     pass
-''''''
+'''
 
 
 # In[298]:
