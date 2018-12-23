@@ -178,7 +178,7 @@ def main(ids,passwords,keyword,lastpage):
 
 browser = webdriver.Chrome("chromedriver.exe")
 
-html = main("neverland251@gmail.com","cjswp12358","하이네켄",100)
+html = main("neverland251@gmail.com","패스워드","하이네켄",100)
 
 
 # In[178]:
