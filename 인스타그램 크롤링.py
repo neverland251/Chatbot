@@ -178,10 +178,6 @@ def main(ids,passwords,keyword,lastpage):
 
 browser = webdriver.Chrome("chromedriver.exe")
 
-
-# In[187]:
-
-
 html = main("neverland251@gmail.com","cjswp12358","하이네켄",100)
 
 
@@ -199,7 +195,7 @@ html
 
 # In[76]:
 
-
+'''
 for i in browser.find_elements_by_tag_name("a"):
     if i.find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").tag_name == "article":
         tests = i.get_attribute("href").split("/")[4]
@@ -208,17 +204,7 @@ for i in browser.find_elements_by_tag_name("a"):
             print("executed")
         else : print("false")
 
-
-# In[51]:
-
-
-browser.find_elements_by_tag_name("a")
-
-
-# In[47]:
-
-
-DataFrame(html[0]).to_csv("test.csv")
+'''
 
 
 # In[298]:
