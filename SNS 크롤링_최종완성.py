@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[124]:
+# In[44]:
 
 
+from selenium.common.exceptions import WebDriverException
 from selenium import webdriver
 from selenium.webdriver import ActionChains as AC
 from selenium.webdriver.common.keys import Keys
@@ -15,11 +16,13 @@ import pandas as pd
 import numpy as np
 import random
 
+import csv
+
 from time import sleep
 import re
 
 
-# In[ ]:
+# In[56]:
 
 
 #로그인 부분
@@ -43,7 +46,7 @@ def login_seq(ids,passwords):
 
 
 #검색어 입력
-def search(keyword):
+def search(keyword,last,once):
 
     browser.get("https://www.instagram.com/")
     search = browser.find_elements_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[2]/input")
@@ -52,13 +55,14 @@ def search(keyword):
     button = browser.find_elements_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[2]/span")
     AC(browser).move_to_element(button[0]).click().perform()
     sleep(2)
-    for i in browser.find_elements_by_tag_name("span"):
+    for i in browser.find_elements_by_tag_name("div"):
         if i.text == "#"+str(keyword):
             print("true")
+            iteration = round(int(i.find_element_by_xpath("..").find_elements_by_tag_name("span")[2].text.replace(",",""))/(last*once))
             AC(browser).move_to_element(i).click().perform()
             break
         else : pass
-
+    return iteration
 
 # In[401]:
 
@@ -78,7 +82,7 @@ def fail_return(current):
     except: pass
 
 
-# In[63]:
+# In[50]:
 
 
 def engine(firstpage,lastpage,current,post):
@@ -103,6 +107,7 @@ def engine(firstpage,lastpage,current,post):
                                 sleep(1)
                                 ab = browser.find_element_by_xpath("/html/body/div[3]/div/div[2]/div/article/div[2]/div[1]/ul/li[1]/div/div/div/span")
                                 datalist.append(ab.text.replace("\n","").replace("#"," "))
+                                log.append("append type1 완료")
                                 AC(browser).move_to_element(k).click().perform()
                                 current = browser.current_url.split("/")[4]
 
@@ -113,6 +118,7 @@ def engine(firstpage,lastpage,current,post):
                                 sleep(1)
                                 ab = browser.find_element_by_xpath("/html/body/div[3]/div/div[2]/div/article/div[2]/div[1]/ul/li[1]/div/div/div/span")
                                 datalist.append(ab.text.replace("\n","").replace("#"," "))
+                                log.append("append type2 완료")
                                 AC(browser).move_to_element(k).click().perform()
                                 current = browser.current_url.split("/")[4]
 
@@ -121,6 +127,7 @@ def engine(firstpage,lastpage,current,post):
                                 sleep(1)
                                 ab = browser.find_element_by_xpath("/html/body/div[3]/div/div[2]/div/article/div[2]/div[1]/ul/li[1]/div/div/div/span")
                                 datalist.append(ab.text.replace("\n","").replace("#"," "))
+                                log.append("append type3 완료")
                                 exit = browser.find_element_by_xpath("/html/body/div[3]/div/button")
                                 AC(browser).move_to_element(exit).click().perform()
                                 current = browser.current_url.split("/")[4]
@@ -134,6 +141,8 @@ def engine(firstpage,lastpage,current,post):
                     break
             
             #예외가 발생하면 일단 창의 X버튼을 누르고, kill_switch를 1로 켠다. 
+        except WebDriverException:
+            break
         except :
             try:
                 exit = browser.find_element_by_xpath("/html/body/div[3]/div/button")
@@ -141,10 +150,12 @@ def engine(firstpage,lastpage,current,post):
             except : pass
             log.append("오류 발생")
             sleep(1)
+
+            
     return(datalist,current,log)
 
 
-# In[140]:
+# In[8]:
 
 
 def get_clear_browsing_button(browser):
@@ -160,7 +171,7 @@ def chrome_flush():
 
     browser.get("chrome://settings/clearBrowserData");
     sleep(1)
-
+    log2 = ["플러싱 시작"]
     wait = WebDriverWait(browser, 60)
     wait.until(get_clear_browsing_button)
     get_clear_browsing_button(browser).click()
@@ -169,48 +180,60 @@ def chrome_flush():
     # close the active tab
     browser.close()
     sleep(1)
-    log2.append("플러싱 완료")
+    log2 = log2+["플러싱 완료"]
 
     # Switch back to the first tab
     browser.switch_to.window(browser.window_handles[0])
     return log2
 
 
-# In[145]:
+# In[58]:
+
+
+def main(keyword,last,once):
+    datum = list()
+    logfile = DataFrame()
+
+    login_seq("neverland251@gmail.com","cjswp12358")
+    sleep(1)
+
+    iterations = search(keyword,last,once)
+    browser.implicitly_wait(10)
+    print(iterations)
+
+    cont = browser.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div/div[1]/div[1]/a")
+    current = cont.get_attribute("href").split("/")[4]
+    fail_return(current)
+
+    with open("crawlling.csv","w",encoding="UTF-8") as text:
+        with open ("log.csv","w") as logtext:
+            f = csv.writer(text, delimiter = " ")
+            l = csv.writer(logtext,delimiter = " ")
+            for i in range(0,iterations - 10):
+                aaa,current,log = engine(1,last,current,once)    
+                log2 = chrome_flush()
+                log += log2
+                for i,j in zip(aaa,log):
+                    f.writerow([i])
+                    l.writerow([j])
+                for k in log2:
+                    l.writerow([k])
+
+
+# In[60]:
 
 
 browser = webdriver.Chrome("chromedriver.exe")
 
 
-# In[146]:
+# In[ ]:
 
 
-datum = list()
-logfile = DataFrame()
-
-login_seq("neverland251@gmail.com","")
-sleep(1)
-
-search("하이네켄")
-sleep(5)
-
-cont = browser.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div/div[1]/div[1]/a")
-current = cont.get_attribute("href").split("/")[4]
-fail_return(current)
-
-for i in range(0,1):
-    aaa,current,log = engine(1,2,current,10)    
-    datum.append(aaa)
-    logfile = pd.concat([logfile,DataFrame(log)])
-    log2 = chrome_flush()
-    logfile = pd.concat([logfile,DataFrame(log2)])
-
-logfile.reset_index()
-logfile.to_csv("log.csv")
+main("하이네켄",5,10)
 
 
-# In[148]:
+# In[ ]:
 
 
-logfile
+
 
