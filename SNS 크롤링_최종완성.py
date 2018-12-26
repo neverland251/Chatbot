@@ -188,7 +188,7 @@ browser = webdriver.Chrome("chromedriver.exe")
 datum = list()
 logfile = DataFrame()
 
-login_seq("neverland251@gmail.com","cjswp12358")
+login_seq("neverland251@gmail.com","")
 sleep(1)
 
 search("하이네켄")
