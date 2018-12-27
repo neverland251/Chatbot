@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[44]:
+# In[1]:
 
 
 from selenium.common.exceptions import WebDriverException
@@ -22,7 +22,7 @@ from time import sleep
 import re
 
 
-# In[56]:
+# In[2]:
 
 
 #로그인 부분
@@ -67,22 +67,21 @@ def search(keyword,last,once):
 # In[401]:
 
 
-# In[6]:
+# In[12]:
 
 
 #블록 등 비정상상황 발생시 해당 게시물 위치부터 다시 시작
 
 def fail_return(current):
-    try:
-        for ax in browser.find_elements_by_tag_name("a"):
-            if ax.find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").tag_name == "article":
-                tests = ax.get_attribute("href").split("/")[4]
-                if current == tests:
-                    AC(browser).move_to_element(ax).click().perform()
-    except: pass
+    
+    for ax in browser.find_elements_by_tag_name("a"):
+        if ax.find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").find_element_by_xpath("..").tag_name == "article":
+            tests = ax.get_attribute("href").split("/")[4]
+            if current == tests:
+                AC(browser).move_to_element(ax).click().perform()
 
 
-# In[50]:
+# In[4]:
 
 
 def engine(firstpage,lastpage,current,post):
@@ -141,13 +140,13 @@ def engine(firstpage,lastpage,current,post):
                     break
             
             #예외가 발생하면 일단 창의 X버튼을 누르고, kill_switch를 1로 켠다. 
-        except WebDriverException:
-            break
         except :
             try:
                 exit = browser.find_element_by_xpath("/html/body/div[3]/div/button")
                 AC(browser).move_to_element(exit).click().perform()
-            except : pass
+            except : 
+                AC(browser).send_keys(Keys.PAGE_DOWN).perform()
+                pass
             log.append("오류 발생")
             sleep(1)
 
@@ -155,7 +154,7 @@ def engine(firstpage,lastpage,current,post):
     return(datalist,current,log)
 
 
-# In[8]:
+# In[5]:
 
 
 def get_clear_browsing_button(browser):
@@ -187,7 +186,7 @@ def chrome_flush():
     return log2
 
 
-# In[58]:
+# In[6]:
 
 
 def main(keyword,last,once):
@@ -220,16 +219,16 @@ def main(keyword,last,once):
                     l.writerow([k])
 
 
-# In[60]:
+# In[17]:
 
 
 browser = webdriver.Chrome("chromedriver.exe")
 
 
-# In[ ]:
+# In[18]:
 
 
-main("하이네켄",5,10)
+main("하이네켄",5,20)
 
 
 # In[ ]:
