@@ -37,29 +37,13 @@ class todaybeer_main(todaybeer):
 
     def __init__(self):
         from keras import models
-
-        from keras.models import Sequential
-        from keras.layers import Dense
-        from keras.layers import Flatten
-        from keras.layers import Embedding
-        from keras.layers.convolutional import Conv1D
-        from keras.layers.convolutional import MaxPooling1D
-        from keras.layers import Dropout
         from keras.preprocessing import sequence
-        from keras.layers import LSTM
-        from keras.utils import np_utils
-        from sklearn.model_selection import train_test_split
+
         from sklearn.feature_extraction.text import CountVectorizer
         import pandas as pd
 
         from pandas import DataFrame, Series
         import numpy as np
-
-        import re
-
-        import matplotlib as mpl
-        import matplotlib.pyplot as plt
-        import matplotlib.font_manager as fm
 
         import copy
 
@@ -74,5 +58,11 @@ class todaybeer_main(todaybeer):
         self.sequence = sequence
         todaybeer.__init__(self)
 
+'''
+beer = todaybeer_main()
 
-
+corpus = "오늘 날씨 어때"
+return_class = beer.engine(corpus)
+print(return_class)
+beer.save_corpus(corpus,return_class)
+'''
